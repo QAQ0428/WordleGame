@@ -1,5 +1,5 @@
 # 游玩方法
-下载dictionary.txt 和 main.py到任意位置, 之后运行main.py就行.
+下载dictionary.txt 和 main.py到同一目录下, 之后运行main.py就行.
 
 **运行需要安装rich库!**
 
