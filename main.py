@@ -6,7 +6,7 @@
 import os  # 用于清屏
 import platform  # 用于判断操作系统
 
-import rich  # 用于打印彩色字符
+# import rich 用于打印彩色字符
 import random  # 用于开局随机抽取单词
 
 
@@ -24,12 +24,12 @@ class WordleGame:
         # 用于游戏初始化
         self.clear()
         print("正在初始化,请耐心等待")
-        with open("dictionary.txt", "r") as f:
+        with open(os.path.dirname(__file__)+"/dictionary.txt", "r") as f:
             self.dictionary = f.readlines()
             for i in self.dictionary:
                 self.dictionary[self.dictionary.index(i)] = i.replace("\n", "")  # 去除换行符
-        self.answer = random.choice(self.dictionary)  # 初始化英语词库
-        self.console = rich.get_console()
+        self.answer = random.choice(self.dictionary)  # 初始化答案
+        # self.console = rich.get_console()
         print("初始化结束")
         print("\n")
         print("wordle是一个猜单词的游戏, 你有6次机会猜一个5个字母的单词\n输入你的答案回车后, 如果你的答案中有字母被标成灰色, 说明此字母不在答案中;\n如果你的答案中有字母被标成黄色, "
@@ -56,19 +56,21 @@ class WordleGame:
         self.clear()
         for i in self.answer_table:  # i 是self.answer_table 里面的每一个键
             for j in i:  # j是i里面的每一个字母
-                self.console.print(f"[{self.answer_table[i][i.index(j)]}]{j}[/]", end="")
-            print()
+                print({"green": f"\033[38;2;{0};{255};{0}m{j}",
+                       "yellow": f"\033[38;2;{255};{255};{0}m{j}",
+                       "gray": f"\033[38;2;{128};{128};{128}m{j}"}[self.answer_table[i][i.index(j)]], end="")
+            print("\033[0m")
 
 
 def main():
     wordle_game = WordleGame()
     while wordle_game.count < 6:  # 6次机会循环
-        player_input = input(f"输入第{wordle_game.count}个5个字母的词语")
+        player_input = input(f"输入第{wordle_game.count + 1}个5个字母的词语: ")
         check_result = wordle_game.check(player_input)
         if check_result:
             wordle_game.answer_table[player_input] = check_result
             wordle_game.count += 1
-            print(wordle_game.count, wordle_game.answer_table)
+            # print(wordle_game.count, wordle_game.answer_table) 调试的时候用的, 忘记删了 尴尬
             wordle_game.show_result()
         if wordle_game.check(player_input):
             if wordle_game.answer == player_input:
